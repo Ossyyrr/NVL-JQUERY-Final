@@ -1,3 +1,18 @@
+<!--    HAZ UN 3 EN RAYA  
+
+Preparar unos estilos básicos para que la tabla tenga la clásica apariencia de un tablero de 3 en raya. Para ello puedes modificar la tabla anterior como quieras, añadiendo las clases o identificadores que creas necesario.
+Cada vez que el ratón pase por encima de cualquier celda, resaltar dicha celda mediante jQuery.
+Cada vez que se pinche sobre una celda que esté vacía, se rellena de forma alterna con X ó con O, empezando con la X. Es decir, cuando el tablero esté vacío, la primer celda que se pinche mostrará una X, la siguiente un O, la siguiente una X, y así sucesivamente. Si se pincha sobre una celda ya rellena, no deberá hacer nada.
+Cuando se rellene un valor (X ó O), y éste provoque un 3 en raya, saldrá una alerta indicando el ganador de la partida.
+Si se rellenan todas las celdas, y ninguno consigue hacer las 3 en ralla, saldrá una alerta indicando que ha habido un empate.
+Por si todo esto te ha parecido sencillo y quieres hacer un poco más, intenta hacer alguno (o todos) de los siguientes puntos:
+
+Dar efectos al pinchar sobre la celda, para que los valores aparezcan poco a poco. Puedes probar a que dichos símbolos sean imágenes en vez de simple texto.
+Crear un botón de resetear, para que se pongan todas las celdas vacías y volver a jugar de nuevo.
+Que aparezca algún texto en grande en la pantalla, o alguna imagen, indicando quién ha sido el ganador de la partida, con algún efecto de animación, en vez del mensaje de alerta.
+Poder jugar usando el teclado. Para ello te puedes ir moviendo entre las celdas usando las flechas, y puedes seleccionar la celda que quieras con la tecla de espacio.   -->
+
+
 <!DOCTYPE html>
 <html>	
 <head>
@@ -5,69 +20,264 @@
 	<link rel="stylesheet" type="text/css" href="css/styles.css"/>
 	<link rel="shortcut icon" href="images/favicon.png" /> 
 	<script src="js/jquery 3.4.1.js"></script>
- 	<title> Prework </title>
+	 <title> Prework </title>
+	 <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
 
 
 <style>
-
-img{
-	width: 600px;
-	height: 300px;
-	margin: 50px;
-	filter: contrast(120%) saturate(120%);
+*{
+	font-family: 'Playfair Display', serif;
+	color: rgb(49, 49, 49);
+}
+ td{
+	 height: 200px;
+	 width: 200px;
+	 background-color: azure;
+	 border: black 1px dotted;
+	 transition: .2s;
+	 border-radius: 30px;
+	 transition: .45s;
+ }
+td{
+	background-size: cover;
 }
 button{
 	width: 200px;
 	height: 30px;
-	border: none;
+	border: 2px dotted gold;
 	border-radius: 50px;
-	background:linear-gradient(rgba(255, 195, 29, 0.699), rgb(228, 98, 81, .6));
+	background-color:rgba(251, 226, 0, 0.4);
 	outline: none;
 	transition: .25s;
 	cursor: pointer;
+	margin-top: 50px;
+	font-weight: bold;
 }
-button:hover{
-		box-shadow: 3px 3px 3px grey;
-	}
-button:active{
-	transform: scale(.95);
-	box-shadow: 2px 2px 3px lightgrey;
-
+#centrar{
+	display: flex;
+	justify-content: center;
+	margin-top: -720px;
 }
-div{
-	width: 800px;;
+#modal{
+	width: 500px;
+	height: 500px;
+	background-color: azure;
+	border-radius: 10px;
+	box-shadow: 0px 0px 100px black;
+	text-align: center;
+}
+h3{
+	margin:60px;
+}
+#fin{
+	width: 220px;
+	display:block;
+	margin: auto;
 }
 
 </style>
-
+<div style="text-align: center">
 </head>
 	<body>
-			<div style="text-align: center">
-					<button>EL BOTON MELOCOTÓN</button>
-			</div>
-<div style="text-align: center">
-		<img src="images/aurora.jpg" alt="aurora boreal">
-		
-		<img src="images/gatogrande.jpg" alt="leopardito">
-
+		<h2 >Muévete con las teclas W A S D <br/> Usa el espacio para seleccionar</h2>
+		<table  style="margin: auto">
+			<tr>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+			<tr>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+			<tr>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+		  </table>
+		  <button>EMPEZAR</button>
+		<p id="cliks"></p>
 	</div>
+<div id="centrar">
+<div id="modal">
+	<h3></h3>
+	<img id="fin" src="" alt="">
+	<button>Volver a jugar</button>
+</div>
+</div>
+
+<footer style="position:fixed; bottom: 0px; right:20px;">
+	<h6>Patri siempre gana :)</h6>
+</footer>
 
 <script>
 
-$("img").first().hide();
-$("button").on("click", function(){
-	$("img").slideToggle(500, function(){
-		$(this).insertBefore($("img").first());
+var seleccion;
+var marcado = [false,false,false,false,false,false,false,false,false];
+var cli= 0;
+var marca = [];
+var empate = true;
+var ganador;
+
+$('button').click(function() {
+    location.reload();
+});
+
+
+function fondo (){
+			$("td").css("background-color", "azure");
+			$("td").css("border", "black 1px dotted");
+			$coleccion[seleccion].style.backgroundColor = "gold";
+			$coleccion[seleccion].style.border = "1px gold double";
+}
+
+var $coleccion = $("td");
+
+$coleccion[4].style.border = "gold 5px double";
+seleccion = 4;
+
+$coleccion.on( "mouseover", function(){
+	$("td").css("border", "black 1px dotted");
+	$(this).css("border", "gold 1px double");
 	});
+
+//---------------------------------------------------------------------------------------------------
+
+
+$coleccion.on("click",function(){
+	selec(this);
+});
+
+
+//x=this; palabra reservada.
+function selec(x){
+	seleccion = $coleccion.index(x);
+	 
+	$("td").css("background-color", "azure");
+	$("td").css("border", "black 1px dotted");
+	$(x).css("background-color", "gold");
+
+	if(marcado[seleccion]==false){
+		if (cli%2===0){
+			$(x).css("background-image", "url('images/x.png')");
+			marca[seleccion]="x";
+		}else{
+			$(x).css("background-image", "url('images/c.png')");
+			marca[seleccion]="c"
+		}
+	}else{
+		cli--;
+	}
+		
+
+	//$("#cliks").text("clicks del ratón:" + cli);
+
 	
+
+	$(x).css("border", "gold 1px double");
+	cli++;
+	marcado[seleccion] = true;
+
+
+	if (marca[0]=="x" && marca[1]=="x" && marca[2]=="x" || marca[3]=="x" && marca[4]=="x" && marca[5]=="x" || marca[6]=="x" && marca[7]=="x" && marca[8]=="x" || marca[0]=="x" && marca[3]=="x" && marca[6]=="x" || marca[1]=="x" && marca[4]=="x" && marca[7]=="x" || marca[2]=="x" && marca[5]=="x" && marca[8]=="x" || marca[0]=="x" && marca[4]=="x" && marca[8]=="x" || marca[2]=="x" && marca[4]=="x" && marca[6]=="x"){
+	ganador = 'images/x.png';
+	empate=false;
+	modal(ganador);
+	}
+	if (marca[0]=="c" && marca[1]=="c" && marca[2]=="c" || marca[3]=="c" && marca[4]=="c" && marca[5]=="c" || marca[6]=="c" && marca[7]=="c" && marca[8]=="c" || marca[0]=="c" && marca[3]=="c" && marca[6]=="c" || marca[1]=="c" && marca[4]=="c" && marca[7]=="c" || marca[2]=="c" && marca[5]=="c" && marca[8]=="c" || marca[0]=="c" && marca[4]=="c" && marca[8]=="c" || marca[2]=="c" && marca[4]=="c" && marca[6]=="c"){
+	ganador = "images/c.png";
+	empate=false;
+	modal(ganador);
+	}
+	if(cli==9 && empate==true){
+		ganador = "images/p.png";
+		modal(ganador);	
+	}
+};
+
+$("#modal").hide();
+function modal(g){
+$("h3").text("EL GANADOR ES");
+$("#modal").slideDown(400);
+$("#fin").attr("src", g );
+
+}
+
+
+$( "body" ).on( "keypress", function(e) {
+		var key = e.keyCode;
+		
+
+	switch (key){
+		case 119:
+		switch (seleccion){
+				default: seleccion = seleccion - 3; break;
+				case 2:
+				seleccion = 7;
+				break;
+				case 1:
+				seleccion = 6;
+				break;
+				case 0:
+				seleccion = 8;
+				break;
+			}
+		fondo();
+		break;
+
+		case 115:
+		switch (seleccion){
+				default: seleccion = seleccion + 3; break;
+				case 6:
+				seleccion = 1;
+				break;
+				case 7:
+				seleccion = 2;
+				break;
+				case 8:
+				seleccion = 0;
+				break;
+			}
+		fondo();
+		break;
+
+		case 97:
+		if (seleccion > 0){
+			seleccion--;
+		}else{
+			seleccion = 8;
+		}
+		fondo();
+		break;
+
+		case 100:
+		if (seleccion < 8){
+			seleccion++;
+		}else{
+			seleccion = 0;
+		}
+		fondo();
+		break;
+		case 32:
+		selec($coleccion[seleccion]);
+	
+	//https://stackoverflow.com/questions/9146651/trigger-an-event-on-click-and-enter
+		break;
+}
 });
 
 
 
 
 
-
-
+/*
+W = 119
+s = 115
+a = 97
+d = 100
+*/
 
 </script>
 
